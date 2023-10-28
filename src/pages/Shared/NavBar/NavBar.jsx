@@ -16,9 +16,16 @@ const NavBar = () => {
         <li><Link to="/">Home</Link> </li>
         <li> <Link to="/about">About</Link> </li>
         {
-            user ? <button className="btn-error btn" onClick={handleLogOut}>Logout</button> : <li> <Link to="/login">Login</Link> </li>
+            user ? <>
+                <li>
+                    <button className="btn-error btn" onClick={handleLogOut}>Logout</button>
+                </li>
+                <li> <Link to="/bookings">My Bookings</Link> </li>
+            </>
+                :
+                <li> <Link to="/login">Login</Link> </li>
         }
-        
+
     </>
     return (
         <div className="navbar bg-base-100 h-28 mb-4">
