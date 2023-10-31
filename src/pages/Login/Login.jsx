@@ -1,11 +1,14 @@
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import img from '../../assets/images/login/login.svg'
 import { useContext } from 'react';
 import { AuthContext } from '../../providers/AuthProvider';
+import axios from 'axios';
 
 const Login = () => {
 
     const { signIn } = useContext(AuthContext);
+    const location = useLocation();
+    const navigate = useNavigate(); // Fixed the typo here
 
     const handleLogin = event => {
         event.preventDefault();
@@ -13,10 +16,24 @@ const Login = () => {
         const email = form.email.value;
         const password = form.password.value;
         console.log(name, email, password)
+
         signIn(email, password)
             .then(result => {
-                const user = result.user;
-                console.log(user);
+                const loggedInUser = result.user;
+                console.log(loggedInUser);
+                const user = { email }
+                // nevigate(location?.state ? location?.state : '/')
+                // get access
+                // axios.post('http://localhost:9000/jwt', user) //after cros
+                axios.post('http://localhost:9000/jwt', user,
+                    { withCredentials: true })
+                    .then(res => {
+                        console.log(res.data)
+                        if (res.data.success) {
+                            navigate(location?.state ? location?.state : '/')
+                        }
+                    })
+
             })
             .catch(error => console.log(error));
     }
@@ -41,7 +58,7 @@ const Login = () => {
                                 <label className="label">
                                     <span className="label-text">Password</span>
                                 </label>
-                                <input type="text" name='password' placeholder="password" className="input input-bordered" />
+                                <input type="password" name='password' placeholder="password" className="input input-bordered" />
                                 <label className="label">
                                     <a href="#" className="label-text-alt link link-hover">Forgot password?</a>
                                 </label>

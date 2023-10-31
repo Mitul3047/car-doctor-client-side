@@ -1,82 +1,34 @@
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../providers/AuthProvider";
 import BookingRow from "./BookingRow";
-import { useNavigate } from "react-router-dom";
+import axios from "axios";
+// import { useNavigate } from "react-router-dom";
 
 const Bookings = () => {
-    // const { user } = useContext(AuthContext);
-    // const [bookings, setBookings] = useState([])
-    // const url = `http://localhost:9000/bookings?email=${user?.email}&sort=1`
-
-    // useEffect(() => {
-    //     fetch(url)
-    //         .then(r => r.json())
-    //         .then(data => setBookings(data))
-
-    // }, [url]);
-
-    // const handleDelete = id => {
-    //     const proceed = confirm('Are You sure you want to delete');
-    //     if (proceed) {
-    //         fetch(`http://localhost:9000/bookings/${id}`, {
-    //             method: 'DELETE'
-    //         })
-    //             .then(res => res.json())
-    //             .then(data => {
-    //                 console.log(data);
-    //                 if (data.deletedCount > 0) {
-    //                     alert('deleted successful');
-    //                     const remaining = bookings.filter(booking => booking._id !== id);
-    //                     setBookings(remaining);
-    //                 }
-    //             })
-    //     }
-    // }
-
-    // const handleBookingConfirm = id => {
-    //     fetch(`http://localhost:9000/bookings/${id}`, {
-    //         method: 'PATCH',
-    //         headers: {
-    //             'content-type': 'application/json'
-    //         },
-    //         body: JSON.stringify({ status: 'confirm' })
-    //     })
-    //         .then(res => res.json())
-    //         .then(data => {
-    //             console.log(data);
-    //             if (data.modifiedCount > 0) {
-    //                 // update state
-    //                 const remaining = bookings.filter(booking => booking._id !== id);
-    //                 const updated = bookings.find(booking => booking._id === id);
-    //                 updated.status = 'confirm'
-    //                 const newBookings = [updated, ...remaining];
-    //                 setBookings(newBookings);
-    //             }
-    //         })
-    // }
+ 
     const { user } = useContext(AuthContext);
     const [bookings, setBookings] = useState([]);
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
 
-    const url = `http://localhost:9000/bookings?email=${user?.email}`;
+    const url = `http://localhost:9000/bookings?email=${user?.email}&sort=1`
+
+
+   
     useEffect(() => {
-        fetch(url, {
-            method: 'GET',
-            headers: {
-                authorization: `Bearer ${localStorage.getItem('car-access-token')}`
-            }
+         // with axios
+    // axios.get(url)
+    // after cookies
+    axios.get(url,
+        { withCredentials: true })
+        .then(res => {
+            setBookings(res.data)
         })
-            .then(res => res.json())
-            .then(data => {
-                if (!data.error) {
-                    setBookings(data)
-                }
-                else {
-                    // logout and then navigate
-                    navigate('/');
-                }
-            })
-    }, [url, navigate]);
+        // fetch(url)
+        //     .then(r => r.json())
+        //     .then(data => setBookings(data))
+
+    }, [url]);
+
 
     const handleDelete = id => {
         const proceed = confirm('Are You sure you want to delete');
@@ -127,7 +79,7 @@ const Bookings = () => {
                     {/* head */}
                     <thead>
                         <tr>
-                            <th>Delete</th>
+                            <th>Action</th>
                             <th>Image</th>
                             <th>Service</th>
                             <th>Date</th>
